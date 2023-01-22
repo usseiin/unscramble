@@ -17,9 +17,6 @@ class GameViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
-    private var _count = 0
-    val count: Int get() = _count
-
     private lateinit var currentWord: String
 
     private var usedWords: MutableSet<String> = mutableSetOf()
@@ -70,6 +67,7 @@ class GameViewModel: ViewModel() {
                     currentState -> currentState.copy(isGuessedWordWrong = true)
             }
         }
+        updateUserGuess("")
     }
 
     private fun updateGameState(updatedScore: Int) {
@@ -77,12 +75,11 @@ class GameViewModel: ViewModel() {
             _uiState.update {
                 currentState -> currentState.copy(
                     isGuessedWordWrong = false,
-                    currentScrambleWord = pickRandomWordAndShuffle(),
                     currentWordCount = currentState.currentWordCount.inc(),
+                    score = updatedScore,
                     isGameOver = true
                 )
             }
-            userGuess = ""
         } else {
             _uiState.update {
                 currentState -> currentState.copy(
@@ -92,7 +89,6 @@ class GameViewModel: ViewModel() {
                     score = updatedScore
                 )
             }
-            userGuess = ""
         }
     }
 
